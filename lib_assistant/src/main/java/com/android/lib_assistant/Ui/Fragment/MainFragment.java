@@ -279,38 +279,5 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
     @Override
     public void onListenerToFragment(String key) {
 
-
-//        if(key.equals(String.valueOf(Constants.BottomNavConstants.MENU_TIME_LINE_SCREEN))){
-//            replaceFragment(R.id.container_body, TimeLineFragment.newInstance(), String.valueOf(Constants.BottomNavConstants.MENU_TIME_LINE_SCREEN));
-//            getSupportActionBar().setTitle("Timeline");
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_FAVORITES))){
-//            getSupportActionBar().setTitle("Favorites");
-//            FavoritesFragment favoritesFragment= new FavoritesFragment();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,favoritesFragment, String.valueOf(Constants.BottomNavConstants.ACTION_FAVORITES)).commit();
-//            getSupportActionBar().setTitle("Favorites");
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.MENU_MY_PUBLISHING_SCREEN))){
-//            replaceFragment(R.id.container_body, PublishingFragment.newInstance(), String.valueOf(Constants.BottomNavConstants.MENU_MY_PUBLISHING_SCREEN));
-//            getSupportActionBar().setTitle("Jobber");
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_REVIEWS))){
-//            getSupportActionBar().setTitle("Rates");
-//            ReviewFragment reviewFragment = new ReviewFragment();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,reviewFragment, String.valueOf(Constants.BottomNavConstants.ACTION_REVIEWS)).commit();
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_PROFILE))){
-//            getSupportActionBar().setTitle(R.string.home);
-//            ProfileFragment fragment3 = new ProfileFragment();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,fragment3, String.valueOf(Constants.BottomNavConstants.ACTION_PROFILE)).commit();
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_REQUESTS_PRODUCTS))){
-//            getSupportActionBar().setTitle("Requests");
-//            PrdouctRequestsFragment requestsFragment= new PrdouctRequestsFragment();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,requestsFragment, String.valueOf(Constants.BottomNavConstants.ACTION_REQUESTS_PRODUCTS)).commit();
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_BROKERS))){
-//            getSupportActionBar().setTitle("Brokers");
-//            AllJobberFragment allJobberFragment= new AllJobberFragment();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,allJobberFragment, String.valueOf(Constants.BottomNavConstants.ACTION_BROKERS)).commit();
-//        }else if(key.equals(String.valueOf(Constants.BottomNavConstants.ACTION_CHAT_ROOMS))){
-//            getSupportActionBar().setTitle("Chat rooms");
-//            Chat_rooms chat_rooms= new Chat_rooms();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.container_body,chat_rooms, String.valueOf(Constants.BottomNavConstants.ACTION_CHAT_ROOMS)).commit();
-//        }
     }
 }
