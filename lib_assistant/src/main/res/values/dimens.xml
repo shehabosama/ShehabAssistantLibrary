@@ -1,0 +1,51 @@
+<resources>
+    <!--dimes for design 3-->
+    <dimen name="headerTextSize">22sp</dimen>
+    <dimen name="newsMoreTextSize">12sp</dimen>
+    <dimen name="loginCardRadius">20dp</dimen>
+    <dimen name="loginViewsMargin">20dp</dimen>
+
+    <dimen name="signup_text_margin_top">10dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Fonts -->
+    <dimen name="font_xsmall">10sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_medium">14sp</dimen>
+    <dimen name="font_large">16sp</dimen>
+    <dimen name="font_xlarge">18sp</dimen>
+    <dimen name="font_xxlarge">24sp</dimen>
+    <dimen name="font_xxxlarge">32sp</dimen>
+    <dimen name="font_xxxxlarge">40sp</dimen>
+    <dimen name="font_xxxxxlarge">50sp</dimen>
+    <dimen name="txt_56sp">56sp</dimen>
+    <dimen name="font_22sp">22sp</dimen>
+
+    <dimen name="padding_xSmall">2dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_large">15dp</dimen>
+    <dimen name="padding_xlarge">20dp</dimen>
+    <dimen name="padding_xxlarge">30dp</dimen>
+    <dimen name="padding_xxxlarge">40dp</dimen>
+    <dimen name="padding_action_start">6dp</dimen>
+
+    <dimen name="margin_xSmall">3dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+    <dimen name="margin_xxlarge">46dp</dimen>
+    <dimen name="margin_xxxlarge">60dp</dimen>
+
+
+    <dimen name="OrderStatusTextViewSize">48dp</dimen>
+    <dimen name="CircleStatusSize">50dp</dimen>
+    <dimen name="camera_view_height">240dp</dimen>
+    <dimen name="grid_expected_size">90dp</dimen>
+    <dimen name="order_image_height">200dp</dimen>
+    <dimen name="margin_1dp">1dp</dimen>
+    <dimen name="signatureView_height">400dp</dimen>
+    <dimen name="map_container_height">200dp</dimen>
+</resources>
