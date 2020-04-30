@@ -4,15 +4,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import com.android.lib_assistant.R;
 
 /**
  * Created by peter on 27/05/18.
  */
 
 public class UiUtilities {
+    public static String getApplicationVersion(Context context) {
 
+        String versionName = "";
+        try {
+            versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
     public static void showBasicDialog(Context context, String message, String positiveString, String negativeString) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
         builder1.setMessage(message);

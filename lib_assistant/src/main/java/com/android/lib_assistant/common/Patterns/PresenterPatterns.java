@@ -4,12 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 
-import com.android.lib_assistant.common.HelperStuffs.Constants;
-import com.android.lib_assistant.common.SqlHelper.myDbAdapter;
+import com.android.lib_assistant.common.SqlHelper.MyDbAdapter;
+import com.android.lib_assistant.common.model.PatternQuestionAnswer;
 
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import static android.content.ContentValues.TAG;
 
@@ -17,7 +18,10 @@ import static android.content.ContentValues.TAG;
 public class PresenterPatterns implements PatternsContract.Presenter{
 
     private PatternsContract.View mView;
-    private myDbAdapter myDbAdapter;
+    private MyDbAdapter myDbAdapter;
+    public List<PatternQuestionAnswer> presenterPatterns;
+    public Random randomGenerator;
+
     public String[] pat_en ={
             /*open favorites fragment*/"favorites","favorite","go to favorite","go to favorites","move to favorite","move to favorites","favourites","go to favourites",
             /*open timeline fragment*/"timeline","go to th timeline","view products","go to the posts","posts","go to timeline",
@@ -41,139 +45,178 @@ public class PresenterPatterns implements PatternsContract.Presenter{
     };
 
 
-    public PresenterPatterns(PatternsContract.View mView) {
+    public PresenterPatterns(PatternsContract.View mView ,Context context) {
         this.mView = mView;
+        randomGenerator = new Random();
+        myDbAdapter = new MyDbAdapter(context);
+        presenterPatterns = myDbAdapter.getData();
     }
 
 
     @Override
-    public String PatternsFunc(List<String> patterns, int i, Context context){
-        myDbAdapter = new myDbAdapter(context);
-        Log.e(TAG, "PatternsFunc: "+patterns.get(i).toLowerCase() );
+    public String PatternsFunc(List<String> patterns, List<Integer> i, Context context){
+
+       // Log.e(TAG, "PatternsFunc: "+patterns.get(i).toLowerCase() );
         String[] answer_about_competitor = {"i don't care about these guys. I believe that I will be special in the future.",
                 "don't mention this name in this application because these my competitor . deal ?", "lol. don't say this boolshit",
                 "i thank you are made me angry",
                 "you can ask them. okay. i'm not a babysitter for them",
                 "i hate this question","not funny question"};
-        if(patterns.get(i).contains("go to timeline")||
-                patterns.get(i).contains("timeline")||
-                patterns.get(i).contains("go to the timeline")||
-                patterns.get(i).contains("view products")||
-                patterns.get(i).contains("posts")){
-           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.MENU_TIME_LINE_SCREEN));
-            patterns.clear();
-            return "opening time line";
 
-        }else if(patterns.get(i).contains("favorites")||
-                patterns.get(i).contains("favorite")||
-                patterns.get(i).contains("go to favorite")
-        ){
 
-          //  mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_FAVORITES));
-            patterns.clear();
-            return "opening favorites";
-        }else if(patterns.get(i).contains("publish")||
-                patterns.get(i).contains("add posts")||
-                patterns.get(i).contains("add land")||
-                patterns.get(i).contains("add flats")||
-                patterns.get(i).contains("add post")||
-                patterns.get(i).contains("publish posts")){
-           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.MENU_MY_PUBLISHING_SCREEN));
+//        if(patterns.get(i).contains("go to timeline")||
+//                patterns.get(i).contains("timeline")||
+//                patterns.get(i).contains("go to the timeline")||
+//                patterns.get(i).contains("view products")||
+//                patterns.get(i).contains("posts")){
+//           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.MENU_TIME_LINE_SCREEN));
+//            patterns.clear();
+//            return "opening time line";
+//
+//        }else if(patterns.get(i).contains("favorites")||
+//                patterns.get(i).contains("favorite")||
+//                patterns.get(i).contains("go to favorite")
+//        ){
+//
+//          //  mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_FAVORITES));
+//            patterns.clear();
+//            return "opening favorites";
+//        }else if(patterns.get(i).contains("publish")||
+//                patterns.get(i).contains("add posts")||
+//                patterns.get(i).contains("add land")||
+//                patterns.get(i).contains("add flats")||
+//                patterns.get(i).contains("add post")||
+//                patterns.get(i).contains("publish posts")){
+//           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.MENU_MY_PUBLISHING_SCREEN));
+//
+//            patterns.clear();
+//            return "opening publish products";
+//        }else if(patterns.get(i).contains("reviews")||
+//                patterns.get(i).contains("go to reviews")||
+//                patterns.get(i).contains("rates")||
+//                patterns.get(i).contains("my rates")||
+//                patterns.get(i).contains("get my rates")){
+//           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_REVIEWS));
+//
+//            patterns.clear();
+//            return "opening you reviews";
+//        }else if(patterns.get(i).contains("profile")||
+//                patterns.get(i).contains("setting")||
+//                patterns.get(i).contains("settings")||
+//                patterns.get(i).contains("my profile")||
+//                patterns.get(i).contains("go to my profile")){
+//         //   mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_PROFILE));
+//
+//            patterns.clear();
+//            return"opening your profile";
+//        }else if(patterns.get(i).contains("orders")||
+//                patterns.get(i).contains("order")||
+//                patterns.get(i).contains("request")||
+//                patterns.get(i).contains("my requests")||
+//                patterns.get(i).contains("requests")){
+//          //  mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_REQUESTS_PRODUCTS));
+//
+//            patterns.clear();
+//            return "opening you requests";
+//        }else if(patterns.get(i).contains("broker")||
+//                patterns.get(i).contains("brokers")||
+//                patterns.get(i).contains("jobbers")||
+//                patterns.get(i).contains("want to brokers")){
+//           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_BROKERS));
+//
+//            patterns.clear();
+//            return "opening brokers";
+//        }else if(patterns.get(i).contains("chat")||
+//                patterns.get(i).contains("room")||
+//                patterns.get(i).contains("rooms")||
+//                patterns.get(i).contains("group")){
+//           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_CHAT_ROOMS));
+//
+//            patterns.clear();
+//            return "opening chat rooms";
+//        }else if(patterns.get(i).contains("hello")||
+//                patterns.get(i).contains("hay")||
+//                patterns.get(i).contains("hay you")){
+//            patterns.clear();
+//            return"hello my friend. how i can help you";
+//        }else if(patterns.get(i).contains("whats my name")||
+//                patterns.get(i).contains("my name is")||
+//                patterns.get(i).contains("my name")
+//                ){
+//
+//            patterns.clear();
+//            return "your name is ";
+//        }else if(patterns.get(i).contains("you know siri")||
+//                patterns.get(i).contains("siri")||
+//                patterns.get(i).contains("cortana")||
+//                patterns.get(i).contains("do you know cortana")||
+//                patterns.get(i).contains("do you google assistant")||
+//                patterns.get(i).contains("google assistant")||
+//                patterns.get(i).contains("google assistance")||
+//                patterns.get(i).contains("do you google assistance")||
+//                patterns.get(i).contains("Siri")
+//                ){
+//            patterns.clear();
+//            return answer_about_competitor[generateRandomInteger(0,answer_about_competitor.length-1)];
+//
+//        }else if (patterns.get(i).contains("who made you")||
+//                patterns.get(i).contains("made you")
+//                ){
+//            patterns.clear();
+//            return"Shehab Osama , he is a java programmer , and he created me to help you";
+//        }else if (patterns.get(i).contains("you have a name")||
+//                patterns.get(i).contains("your name")||
+//                patterns.get(i).contains("whats your name")||
+//                patterns.get(i).contains("who are you")
+//
+//        ){
+//            patterns.clear();
+//            return"my name is shehab assistant can i get you anything ?";
+//        }else if (patterns.get(i).contains("how are you")||
+//                patterns.get(i).contains("whats up")
+//        ){
+//            patterns.clear();
+//            return"i'm fine";
+//        }else{
+//            patterns.clear();
+//            return  "i don't understand you";
+//        }
 
-            patterns.clear();
-            return "opening publish products";
-        }else if(patterns.get(i).contains("reviews")||
-                patterns.get(i).contains("go to reviews")||
-                patterns.get(i).contains("rates")||
-                patterns.get(i).contains("my rates")||
-                patterns.get(i).contains("get my rates")){
-           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_REVIEWS));
+        int index = randomGenerator.nextInt(i.size());
+        Integer item = i.get(index);
 
-            patterns.clear();
-            return "opening you reviews";
-        }else if(patterns.get(i).contains("profile")||
-                patterns.get(i).contains("setting")||
-                patterns.get(i).contains("settings")||
-                patterns.get(i).contains("my profile")||
-                patterns.get(i).contains("go to my profile")){
-         //   mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_PROFILE));
+        mView.getActionKey(String.valueOf(myDbAdapter.getData().get(item).getActionKey()));
+        System.out.println("Managers choice this week" + myDbAdapter.getData().get(item).getActionKey() + "our recommendation to you");
+        return myDbAdapter.getData().get(item).getAnswer();
+    }
 
-            patterns.clear();
-            return"opening your profile";
-        }else if(patterns.get(i).contains("orders")||
-                patterns.get(i).contains("order")||
-                patterns.get(i).contains("request")||
-                patterns.get(i).contains("my requests")||
-                patterns.get(i).contains("requests")){
-          //  mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_REQUESTS_PRODUCTS));
-
-            patterns.clear();
-            return "opening you requests";
-        }else if(patterns.get(i).contains("broker")||
-                patterns.get(i).contains("brokers")||
-                patterns.get(i).contains("jobbers")||
-                patterns.get(i).contains("want to brokers")){
-           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_BROKERS));
-
-            patterns.clear();
-            return "opening brokers";
-        }else if(patterns.get(i).contains("chat")||
-                patterns.get(i).contains("room")||
-                patterns.get(i).contains("rooms")||
-                patterns.get(i).contains("group")){
-           // mView.onListenerToFragment(String.valueOf(Constants.BottomNavConstants.ACTION_CHAT_ROOMS));
-
-            patterns.clear();
-            return "opening chat rooms";
-        }else if(patterns.get(i).contains("hello")||
-                patterns.get(i).contains("hay")||
-                patterns.get(i).contains("hay you")){
-            patterns.clear();
-            return"hello my friend. how i can help you";
-        }else if(patterns.get(i).contains("whats my name")||
-                patterns.get(i).contains("my name is")||
-                patterns.get(i).contains("my name")
-                ){
-
-            patterns.clear();
-            return "your name is "+myDbAdapter.getEmployeeName("name");
-        }else if(patterns.get(i).contains("you know siri")||
-                patterns.get(i).contains("siri")||
-                patterns.get(i).contains("cortana")||
-                patterns.get(i).contains("do you know cortana")||
-                patterns.get(i).contains("do you google assistant")||
-                patterns.get(i).contains("google assistant")||
-                patterns.get(i).contains("google assistance")||
-                patterns.get(i).contains("do you google assistance")||
-                patterns.get(i).contains("Siri")
-                ){
-            patterns.clear();
-            return answer_about_competitor[generateRandomInteger(0,answer_about_competitor.length-1)];
-
-        }else if (patterns.get(i).contains("who made you")||
-                patterns.get(i).contains("made you")
-                ){
-            patterns.clear();
-            return"Shehab Osama , he is a java programmer , and he created me to help you";
-        }else if (patterns.get(i).contains("you have a name")||
-                patterns.get(i).contains("your name")||
-                patterns.get(i).contains("whats your name")||
-                patterns.get(i).contains("who are you")
-
-        ){
-            patterns.clear();
-            return"my name is shehab assistant can i get you anything ?";
-        }else if (patterns.get(i).contains("how are you")||
-                patterns.get(i).contains("whats up")
-        ){
-            patterns.clear();
-            return"i'm fine";
+    @Override
+    public void reservedWords(String reservedWord) {
+        if(reservedWord.contains("who made you")){
+            mView.spockFunc("Shehab Osama , he is a java programmer , and he created me to help you");
+        }else if(reservedWord.contains("What's your name")){
+            mView.spockFunc("My name is shehab assistant. and i'm here to help you");
+        }else if(reservedWord.contains("made you")){
+            mView.spockFunc("Shehab Osama , he is a java programmer , and he created me to help you");
+        } else if(reservedWord.contains("your name")){
+            mView.spockFunc("My name is shehab assistant.");
+        }else if(reservedWord.contains("who own you")){
+            mView.spockFunc("Shehab Osama , he is a java programmer , and he created me to help you");
+        }else if(reservedWord.contains("when is your birthday")){
+            mView.spockFunc("i forgot my birth day now , but when i remember that i will tell you");
+        }else if(reservedWord.contains("your birthday")){
+            mView.spockFunc("i forgot my birth day now");
+        }else if(reservedWord.contains("your birth date")){
+           mView.spockFunc( "i forgot my birth day now , but when i remember that i will tell you");
+        }else if(reservedWord.contains("birth date")){
+            mView.spockFunc("i forgot my birth day now , but when i remember that i will tell you");
         }else{
-            patterns.clear();
-            return  "i don't understand you";
+
+            mView.doNormaOperation();
         }
 
     }
+
     public static int generateRandomInteger(int min, int max) {
         SecureRandom rand = new SecureRandom();
         rand.setSeed(new Date().getTime());

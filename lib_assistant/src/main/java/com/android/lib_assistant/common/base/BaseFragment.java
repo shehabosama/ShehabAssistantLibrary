@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
  * Created by shehab on 18/04/20.
  */
 
+
 public abstract class BaseFragment extends Fragment {
 
     protected abstract void initializeViews(View v);

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -13,7 +12,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -24,12 +22,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.android.lib_assistant.R;
 import com.android.lib_assistant.common.Patterns.PatternsContract;
 import com.android.lib_assistant.common.Patterns.PresenterPatterns;
 import com.android.lib_assistant.common.base.BaseFragment;
+import com.android.lib_assistant.common.model.PatternQuestionAnswer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -39,11 +37,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MainFragment extends BaseFragment implements TextToSpeech.OnInitListener, PatternsContract.View {
 
+    private static CallBacks mcallBacks;
     private static final int REQUEST_MICROPHONE = 1011;
     private PresenterPatterns presenter;
     private List<String> patterns;
@@ -58,7 +59,8 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
         // Required empty public constructor
     }
 
-    public static MainFragment newInstance(){
+    public static MainFragment newInstance(CallBacks callBacks) {
+        mcallBacks = callBacks;
         return new MainFragment();
     }
 
@@ -86,9 +88,7 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
         Voice voice=new Voice("en-us-x-sfg#male_2-local",new Locale("en","US"),400,200,true,a);
         textToSpeech.setVoice(voice);
         textToSpeech.setSpeechRate(0.8f);
-
-        presenter = new PresenterPatterns(this);
-
+        presenter = new PresenterPatterns(this,getActivity());
         checkPermission();
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
         mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -145,12 +145,11 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
             //getting all the matches
             matches = bundle
                     .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
             //displaying the first match
             if (matches != null){
+                presenter.reservedWords(matches.get(0).toLowerCase());
                 Log.e("speshhh", "onResults: "+matches.get(0) );
-                search_array(matches.get(0).toLowerCase(),presenter.pat_en);
-                speakOut();
+
             }
         }
 
@@ -193,8 +192,6 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.RECORD_AUDIO},
                             REQUEST_MICROPHONE);
-
-
             }
         }
     }
@@ -233,33 +230,34 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
             textToSpeech.shutdown();
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void speakOut(){
         textToSpeech.speak(textRekognation,TextToSpeech.QUEUE_FLUSH,null,null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public  void search_array(String txt, String[] pat) {
+    public  void search_array(String txt, List<PatternQuestionAnswer> pat) {
         int M = 0;
         int N = 0;
-        for (int i = 0; i < pat.length; i++) {
-            M = pat[i].length();
+        List<Integer> index = new ArrayList<>();
+        for (int i = 0; i < pat.size(); i++) {
+            M = pat.get(i).getQuestion().length();
             N = txt.length();
             for (int _i = 0; _i <= N - M; _i++) {
-
                 int j;
             /* For current index i, check for pattern
               match */
                 for (j = 0; j < M; j++)
-                    if (txt.charAt(_i + j) != pat[i].charAt(j)) {
+                    if (txt.charAt(_i + j) != pat.get(i).getQuestion().charAt(j)) {
                         textRekognation = "i don't understand you";
                         break;
                     }
                 if (j == M) { // if pat[0...M-1] = txt[i, i+1, ...i+M-1]
                     // System.out.println("Pattern found at index " + _i);
-                    System.out.println(pat[i]);
+                    System.out.println(pat.get(i).getQuestion());
                     String sb = "";
-                    patterns.add(pat[i]);
+                    patterns.add(pat.get(i).getQuestion());
+                    index.add(i);
 
                 }else{
                     textRekognation = "i don't understand you";
@@ -267,17 +265,31 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
             }
         }
         for (int i =0 ;i<patterns.size();i++){
-
-            Log.e("tesxt", "search_array: "+patterns.toString() );
+            Log.e("tesxt", "search_array: "+index + " " +patterns.toString() );
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                textRekognation = presenter.PatternsFunc(patterns,i,getActivity());
+                textRekognation = presenter.PatternsFunc(patterns,index,getActivity());
             }
             patterns.clear();
         }
     }
 
     @Override
-    public void onListenerToFragment(String key) {
+    public void getActionKey(String key) {
+        Log.e(TAG, "onListenerToFragment: "+key );
+        mcallBacks.doAction(Integer.parseInt(key));
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void doNormaOperation() {
+        search_array(matches.get(0).toLowerCase(),presenter.presenterPatterns);
+        speakOut();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void spockFunc(String value) {
+        textRekognation = value;
+        speakOut();
     }
 }

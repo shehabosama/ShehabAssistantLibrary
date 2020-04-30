@@ -7,10 +7,15 @@ import java.util.List;
 public interface PatternsContract {
 
     interface View{
-        void onListenerToFragment(String key);
+        void getActionKey(String key);
+        void doNormaOperation();
+        void spockFunc(String value);
     }
     interface Presenter{
-        String PatternsFunc(List<String> patterns, int i, Context context);
+        String PatternsFunc(List<String> patterns, List<Integer> i, Context context);
+        void reservedWords(String reservedWord);
+
+
 
     }
 }
