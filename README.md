@@ -1,5 +1,5 @@
 # ShehabAssistant
-this is the lib is providing you voice assistant to help you
+this the lib is providing you voice assistant to help you
 in you code by add the three line of code to configer it 
 
 first thing you need add this line in build.gradle (project)
