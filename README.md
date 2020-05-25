@@ -16,7 +16,7 @@ second thing you need add this line to import the library in your code in depend
 
 ```
  dependencies {
-	        implementation 'com.github.shehabosama:ShehabAssistant:2.0'
+	         implementation 'com.github.shehabosama:ShehabAssistant:2.1'
          }
 ```
 
