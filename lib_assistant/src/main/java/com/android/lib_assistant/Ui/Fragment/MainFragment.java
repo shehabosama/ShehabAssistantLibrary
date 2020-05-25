@@ -63,7 +63,9 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
         mcallBacks = callBacks;
         return new MainFragment();
     }
-
+    public static MainFragment newInstance() {
+        return new MainFragment();
+    }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
