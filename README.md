@@ -30,7 +30,7 @@ second thing you need add this line to import the library in your code in depend
   
   `replaceFragment(R.id.container, MainFragment.newInstance(this),"voice");`
   
-  now you need first to delete all cach data because this version is local and we want to make sure that the app is clear to use
+  now you need first to delete all cash data because this version is local and we want to make sure that the app is clear to use
   so you will write this two line in you Activity
   
   ```
@@ -47,7 +47,7 @@ public class MainActivity extends  BaseActivity{
       }
 }
 ```
-to add some words and thire answer you need to make list of objects to set your question and answer
+to add some words and their answer you need to make list of objects to set your question and answer
 like this
 
   ```
@@ -70,11 +70,11 @@ public class MainActivity extends  BaseActivity {
 }
 ```
   every item has object and the object has three parameters
-  first one is the ID  "make sure every item defferint each others"
-  second one is the question "this vesion support just english"
+  first one is the ID  "make sure every item different each others"
+  second one is the question "this version support just english"
   third one is the answer 
   fourth is the key the key is the Action id who will work after say the question , like to say "make a toast" and the key is "1"
-  we will compair if the object return key greater than 0 if there is one will do Action we will explain it more than that
+  we will compare if the object return key greater than 0 if there is one will do Action we will explain it more than that
   
   to make action by key you will add some of code to your broject you should to implement from CallBack Interface like this 
   
