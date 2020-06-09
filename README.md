@@ -65,7 +65,7 @@ public class MainActivity extends  BaseActivity {
 	    List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
-           
+            myDbAdapter.insertData(patternQuestionAnswers);
       }
 }
 ```
@@ -100,6 +100,7 @@ public class MainActivity extends  BaseActivity extends CallBacks{
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(8,"make toast","okay i will make a toast",1));
+	    myDbAdapter.insertData(patternQuestionAnswers);
 
       }
     @Override
