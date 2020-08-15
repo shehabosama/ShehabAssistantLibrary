@@ -1,9 +1,9 @@
 # ShehabAssistant
 
-this the lib is providing you voice assistant to help you
+This the lib is providing to you voice assistant to help you
 in you code by add the three line of code to configer it 
 
-first thing you need add this line in build.gradle (project)
+First thing you need to add this line in build.gradle (project)
 ```
 repositories {
         google()
@@ -12,7 +12,7 @@ repositories {
     }
 ```
 
-second thing you need add this line to import the library in your code in dependencies
+Second thing you need add this line to import the library in your code in dependencies
 
 ```
  dependencies {
@@ -20,13 +20,14 @@ second thing you need add this line to import the library in your code in depend
          }
 ```
 
-  in your activity  
+  In your activity  
   
-  you should to remove the current extend class (AppCompatActivity) and set the BaseActivity
+  You should to remove the current extend class (AppCompatActivity) and set the BaseActivity
+  and you can explore the BaseActivity calss and use it anywhere you want
   
   `public class MainActivity extends  BaseActivity {}`
   
-  then you need to add this line to show the recorder floatActionButton to hear what do you say
+  Then you need to add this line to show the recorder floatActionButton to start hear what do you say
   
   `replaceFragment(R.id.container, MainFragment.newInstance(this),"voice");`
   
@@ -42,12 +43,14 @@ public class MainActivity extends  BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+	
         myDbAdapter = new MyDbAdapter(this);
         myDbAdapter.delete();
+	
       }
 }
 ```
-to add some words and their answer you need to make list of objects to set your question and answer
+To add some words and their answer you need to make list of objects to set your question and answer
 like this
 
   ```
@@ -65,24 +68,25 @@ public class MainActivity extends  BaseActivity {
 	    List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
+	    myDbAdapter.insert(patternQuestions);
            
       }
 }
 ```
-  every item has object and the object has three parameters
-  first one is the ID  "make sure every item different each others"
-  second one is the question "this version support just english"
-  third one is the answer 
-  fourth is the key the key is the Action id who will work after say the question , like to say "make a toast" and the key is "1"
-  we will compare if the object return key greater than 0 if there is one will do Action we will explain it more than that
+  Every item has object and the object has three parameters.
+  First one is the ID  "make sure every item differents each others".
+  Second one is the question "this version support just english".
+  Third one is the answer .
+  Fourth is the key the key is the Action id who will work after say the question , like to say "make a toast" and the key is "1"
+  we will compare if the object return key greater than 0 if there is one will do Action we will explain it more than that.
   
-  to make action by key you will add some of code to your broject you should to implement from CallBack Interface like this 
+  To make action by key you will add some of code to your broject you should implement from CallBack Interface like this 
   
-   `public class MainActivity extends  BaseActivity extends CallBacks {}`
+   `public class MainActivity extends  BaseActivity implements CallBacks {}`
   
-  implement the functions which need it 
+  Implement the functions which need it 
   
-  like this
+  like this : 
   
   ```
 public class MainActivity extends  BaseActivity extends CallBacks{
@@ -100,7 +104,7 @@ public class MainActivity extends  BaseActivity extends CallBacks{
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(8,"make toast","okay i will make a toast",1));
-
+            myDbAdapter.insert(patternQuestions);
       }
     @Override
     public void doAction(int key) {
