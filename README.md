@@ -73,10 +73,10 @@ public class MainActivity extends  BaseActivity {
       }
 }
 ```
-  Every item has object and the object has three parameters.
-  First one is the ID  "make sure every item differents each others".
-  Second one is the question "this version support just english".
-  Third one is the answer .
+  Every item has object and the object has three parameters.<br/>
+  First one is the ID  "make sure every item differents each others".<br/>
+  Second one is the question "this version support just english".<br/>
+  Third one is the answer .<br/>
   Fourth is the key the key is the Action id who will work after say the question , like to say "make a toast" and the key is "1"
   we will compare if the object return key greater than 0 if there is one will do Action we will explain it more than that.
   
