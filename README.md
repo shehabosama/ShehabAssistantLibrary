@@ -1,6 +1,6 @@
 # ShehabAssistant
 
-This lib is providing a voice assistant inside your app by addding three lines of code
+This lib is providing a voice assistant inside your app by adding three lines of code
 
 
 ## Configuration
