@@ -4,7 +4,7 @@ This lib is providing to you a voice assistant to help you
 in you code by adding the three lines of code to configer it 
 
 First thing you need to add this line in build.gradle (project)
-```
+```java
 repositories {
         google()
         jcenter()
@@ -14,7 +14,7 @@ repositories {
 
 Second thing you need to add this line to import the library in your code in dependencies
 
-```
+```java
  dependencies {
 	        implementation 'com.github.shehabosama:ShehabAssistant:2.2'
          }
@@ -24,12 +24,16 @@ Second thing you need to add this line to import the library in your code in dep
   
   You should to remove the current extend class that called (AppCompatActivity) and set the BaseActivity Class
   
-  `public class MainActivity extends  BaseActivity {}`
+  ```java 
+  public class MainActivity extends  BaseActivity {}
+  ```
   
   Then you need to add this line to show the floatActionButton in your layout that will be help you to connect to the voice assitant 
   and with long click it will start to  hear what do you say
   
-  `replaceFragment(R.id.container, MainFragment.newInstance(this),"voice");`
+  ```java
+  replaceFragment(R.id.container, MainFragment.newInstance(this),"voice");
+  ```
   
   now you need first to delete all cash data because this version is local and we want to make sure that the app is clear to use
   so you will write this two line in your Activity
@@ -82,7 +86,10 @@ public class MainActivity extends  BaseActivity {
   
   To make action by key you will add some of code to your project , you should implement from CallBack Interface like this 
   
-   ```java public class MainActivity extends  BaseActivity implements CallBacks {}```
+   ```java 
+   public class MainActivity extends  BaseActivity implements CallBacks {
+   }
+   ```
   
   Implement the functions that belong to this interface that it is need it 
   
