@@ -34,7 +34,7 @@ Second thing you need to add this line to import the library in your code in dep
   now you need first to delete all cash data because this version is local and we want to make sure that the app is clear to use
   so you will write this two line in your Activity
   
-  ```
+  ```java
 public class MainActivity extends  BaseActivity{
 
     private MyDbAdapter myDbAdapter;
@@ -53,7 +53,7 @@ public class MainActivity extends  BaseActivity{
 To add some questions and their answers you need to make list of objects to set your question and answer
 like this
 
-  ```
+  ```java
 public class MainActivity extends  BaseActivity {
 
     private MyDbAdapter myDbAdapter;
@@ -82,13 +82,13 @@ public class MainActivity extends  BaseActivity {
   
   To make action by key you will add some of code to your project , you should implement from CallBack Interface like this 
   
-   `public class MainActivity extends  BaseActivity implements CallBacks {}`
+   ```java public class MainActivity extends  BaseActivity implements CallBacks {}```
   
   Implement the functions that belong to this interface that it is need it 
   
   like this : 
   
-  ```
+  ```java
 public class MainActivity extends  BaseActivity extends CallBacks{
 
     private MyDbAdapter myDbAdapter;
