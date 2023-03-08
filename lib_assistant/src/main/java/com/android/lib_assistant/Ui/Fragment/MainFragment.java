@@ -17,7 +17,6 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,7 +39,7 @@ import java.util.Set;
 import static android.content.ContentValues.TAG;
 
 /**
- * A simple {@link Fragment} subclass.
+ * {@auther Shehab Osama}.
  */
 public class MainFragment extends BaseFragment implements TextToSpeech.OnInitListener, PatternsContract.View {
 
@@ -156,8 +155,6 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
             //displaying the first match
             if (matches != null){
                 presenter.reservedWords(matches.get(0).toLowerCase());
-                Log.e("speshhh", "onResults: "+matches.get(0) );
-
             }
         }
 
@@ -273,7 +270,6 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
             }
         }
         for (int i =0 ;i<patterns.size();i++){
-            Log.e("tesxt", "search_array: "+index + " " +patterns.toString() );
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 textRekognation = presenter.PatternsFunc(patterns,index,getActivity());
             }
@@ -283,7 +279,6 @@ public class MainFragment extends BaseFragment implements TextToSpeech.OnInitLis
 
     @Override
     public void getActionKey(String key) {
-        Log.e(TAG, "onListenerToFragment: "+key );
         mcallBacks.doAction(Integer.parseInt(key));
     }
 
