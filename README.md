@@ -1,4 +1,5 @@
 # ShehabAssistant
+[![](https://jitpack.io/v/shehabosama/ShehabAssistantLibrary.svg)](https://jitpack.io/#shehabosama/ShehabAssistantLibrary)
 
 This lib is providing a voice assistant inside your app by adding three lines of code
 
