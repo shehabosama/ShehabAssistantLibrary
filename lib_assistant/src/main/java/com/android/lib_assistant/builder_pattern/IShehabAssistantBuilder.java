@@ -11,4 +11,7 @@ public interface IShehabAssistantBuilder {
     public ShehabAssistantBuilder checkIfLanguageSupportInCurrentDevice();
     public ShehabAssistantBuilder build();
    public void speakOut(String textRekognation);
+
+    public void stopTTS();
+    public void shutdownTTS();
 }

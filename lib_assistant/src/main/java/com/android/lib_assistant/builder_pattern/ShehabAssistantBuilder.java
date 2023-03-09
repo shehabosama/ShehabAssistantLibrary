@@ -148,9 +148,15 @@ public class ShehabAssistantBuilder  implements IShehabAssistantBuilder, CallBac
     public void doAction(int key) {
 
     }
+    @Override
     public void stopTTS(){
         if(textToSpeech !=null){
             textToSpeech.stop();
+        }
+    }
+    @Override
+    public void shutdownTTS(){
+        if (textToSpeech != null){
             textToSpeech.shutdown();
         }
     }

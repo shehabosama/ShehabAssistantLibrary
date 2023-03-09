@@ -43,7 +43,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class MainActivity extends BaseActivity implements CallBacks {
+public class MainActivity extends AppCompatActivity implements CallBacks {
 
 
     //private MyDbAdapter myDbAdapter;
@@ -128,15 +128,21 @@ public class MainActivity extends BaseActivity implements CallBacks {
                "en")
                .checkIfLanguageSupportInCurrentDevice()
                 //.addListOfQuestionAnswerModel(patternQuestionAnswers)
+               .addFloatActionButton()
                 .build();
 
        findViewById(R.id.tv_noice).setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               shehabAssistantBuilder.speakOut("grate");
+               shehabAssistantBuilder.speakOut("مرحبا بكم في هذا الصباح المتواضع جدا اريد ان اعرفكم بنفسي انا المهندس شهاب اسامه فتحي خريج جامعه القاهره كلية علوم الحاسب");
            }
        });
-
+        findViewById(R.id.tv_stop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shehabAssistantBuilder.stopTTS();
+            }
+        });
 
 //        mStatusView = (TextView) findViewById(R.id.txt_btn);
 //        tv_noice=(TextView)findViewById(R.id.tv_noice);
