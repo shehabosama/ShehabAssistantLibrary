@@ -18,7 +18,7 @@ Second thing you need to add this line to import the library in your code in dep
 
 ```java
  dependencies {
-	        implementation 'com.github.shehabosama:ShehabAssistant:2.3'
+	        implementation 'com.github.shehabosama:ShehabAssistant:Latest_version'
          }
 ```
 
