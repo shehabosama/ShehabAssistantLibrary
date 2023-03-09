@@ -1,4 +1,5 @@
 # ShehabAssistant
+[![](https://jitpack.io/v/shehabosama/ShehabAssistantLibrary.svg)](https://jitpack.io/#shehabosama/ShehabAssistantLibrary)
 
 This lib is providing a voice assistant inside your app by adding three lines of code
 
@@ -17,44 +18,12 @@ Second thing you need to add this line to import the library in your code in dep
 
 ```java
  dependencies {
-	        implementation 'com.github.shehabosama:ShehabAssistant:2.2'
+	        implementation 'com.github.shehabosama:ShehabAssistant:2.3'
          }
 ```
 
-  In your activity  
+In your activity  
   
-  You should to remove the current extend class that called (AppCompatActivity) and set the BaseActivity Class
-  
-  ```java 
-  public class MainActivity extends  BaseActivity {}
-  ```
-  
-  Then you need to add this line to show the floatActionButton in your layout that will be help you to connect to the voice assitant 
-  and with long click it will start to  hear what do you say
-  
-  ```java
-  replaceFragment(R.id.container, MainFragment.newInstance(this),"voice");
-  ```
-  
-  now you need first to delete all cash data because this version is local and we want to make sure that the app is clear to use
-  so you will write this two line in your Activity
-  
-  ```java
-public class MainActivity extends  BaseActivity{
-
-    private MyDbAdapter myDbAdapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-	
-        myDbAdapter = new MyDbAdapter(this);
-        myDbAdapter.delete();
-	
-      }
-}
-```
 To add some questions and their answers you need to make list of objects to set your question and answer
 like this
 
@@ -67,13 +36,17 @@ public class MainActivity extends  BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myDbAdapter = new MyDbAdapter(this);
-        myDbAdapter.delete();
-	
+       
 	    List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
-	    myDbAdapter.insert(patternQuestions);
+	    
+	    final IShehabAssistantBuilder shehabAssistantBuilder =  new ShehabAssistantBuilder(this,"en")
+               .checkIfLanguageSupportInCurrentDevice()
+               .addListOfQuestionAnswerModel(patternQuestionAnswers)
+	       .addFloatActionButton()
+               .build();
+
            
       }
 }
@@ -88,7 +61,7 @@ public class MainActivity extends  BaseActivity {
   To make action by key you will add some of code to your project , you should implement from CallBack Interface like this 
   
    ```java 
-   public class MainActivity extends  BaseActivity implements CallBacks {
+   public class MainActivity extends  AppCompatActivity implements CallBacks {
    }
    ```
   
@@ -105,14 +78,16 @@ public class MainActivity extends  BaseActivity extends CallBacks{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myDbAdapter = new MyDbAdapter(this);
-        myDbAdapter.delete();
-	
-	    List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
+         List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
             patternQuestionAnswers.add(new PatternQuestionAnswer(1,"hello","hello dear",0));
             patternQuestionAnswers.add(new PatternQuestionAnswer(2,"hey","What do you need",0));
-            patternQuestionAnswers.add(new PatternQuestionAnswer(8,"make toast","okay i will make a toast",1));
-            myDbAdapter.insert(patternQuestions);
+	    patternQuestionAnswers.add(new PatternQuestionAnswer(3,"make toast","okay i will make a toast",1));
+	    
+	    final IShehabAssistantBuilder shehabAssistantBuilder =  new ShehabAssistantBuilder(this,"en")
+               .checkIfLanguageSupportInCurrentDevice()
+               .addListOfQuestionAnswerModel(patternQuestionAnswers)
+	       .addFloatActionButton()
+               .build();
       }
     @Override
     public void doAction(int key) {
