@@ -1,21 +1,13 @@
 package com.android.lib_assistant.common.SqlHelper;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.android.lib_assistant.common.HelperStuffs.Message;
+import com.android.lib_assistant.common.HelperStuffs.UiUtilities;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
-
-
 public class MyDbAdapter {
     myDbHelper myhelper;
     public MyDbAdapter(Context context)
@@ -27,7 +19,6 @@ public class MyDbAdapter {
     {
         long idOfInsert=0;
         List<PatternQuestionAnswer> pattern = patternQuestionAnswer;
-
         for(int i =0 ;i<patternQuestionAnswer.size();i++){
             if(patternQuestionAnswer.get(i).getQuestion().contains("who made you")||
                     patternQuestionAnswer.get(i).getQuestion().contains("What's your name")||
@@ -37,8 +28,6 @@ public class MyDbAdapter {
                     patternQuestionAnswer.get(i).getQuestion().contains("when is your birthday")||
                     patternQuestionAnswer.get(i).getQuestion().contains("your birthday")
             ){
-
-
             }else{
                 SQLiteDatabase dbb = myhelper.getWritableDatabase();
                 ContentValues contentValues = new ContentValues();
@@ -48,60 +37,10 @@ public class MyDbAdapter {
                 contentValues.put(myDbHelper.ACTION_KEY, pattern.get(i).getActionKey());
                 idOfInsert = dbb.insert(myDbHelper.TABLE_NAME, null , contentValues);
             }
-
         }
 
         return idOfInsert;
     }
-//    public String getEmployeeName(String typeData) {
-//        Cursor cursor = null;
-//        String empName = "";
-//        try {
-//            SQLiteDatabase db = myhelper.getWritableDatabase();
-//            if(typeData.equals("name")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.ANSWER +" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if(typeData.equals("email")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.MyEmail+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if(typeData.equals("image")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.IMAGE+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if(typeData.equals("phone")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.PHONE+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if (typeData.equals("gender")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.GENDER+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if (typeData.equals("address")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.ADDRESS+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if (typeData.equals("user_id")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.USER_ID+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }else if (typeData.equals("password")){
-//                cursor = db.rawQuery("SELECT "+ myDbHelper.MyPASSWORD+" FROM "+ myDbHelper.TABLE_NAME, null);
-//            }
-//          //  cursor = db.rawQuery("SELECT "+myDbHelper.NAME+" FROM "+myDbHelper.TABLE_NAME, null);
-//            if(cursor.getCount() > 0) {
-//                cursor.moveToFirst();
-//                if(typeData.equals("name")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.ANSWER));
-//                }else if(typeData.equals("email")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.MyEmail));
-//                }else if(typeData.equals("image")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.IMAGE));
-//                }else if(typeData.equals("phone")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.PHONE));
-//                }else if (typeData.equals("gender")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.GENDER));
-//                }else if (typeData.equals("address")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.ADDRESS));
-//                }else if (typeData.equals("user_id")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.USER_ID));
-//                }else if (typeData.equals("password")){
-//                    empName = cursor.getString(cursor.getColumnIndex(myDbHelper.MyPASSWORD));
-//                }
-//
-//            }
-//            return empName;
-//        }finally {
-//            cursor.close();
-//        }
-//    }
     public List<PatternQuestionAnswer> getData()
     {
         List<PatternQuestionAnswer> patternQuestionAnswersList = new ArrayList<>();
@@ -120,29 +59,11 @@ public class MyDbAdapter {
         }
         return patternQuestionAnswersList;
     }
-
     public  void delete()
     {
         SQLiteDatabase db = myhelper.getWritableDatabase();
         db.execSQL("delete from "+ myDbHelper.TABLE_NAME);
-
     }
-
-    public int updateName(String id , String question, String answer)
-    {
-        SQLiteDatabase db = myhelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(myDbHelper.ID_ROW,id);
-        contentValues.put(myDbHelper.QUESTION,question);
-        contentValues.put(myDbHelper.ANSWER,answer);
-
-
-
-        String[] whereArgs= {id};
-        int count =db.update(myDbHelper.TABLE_NAME,contentValues, myDbHelper.ID_ROW+" = ?",whereArgs );
-        return count;
-    }
-
     public static class myDbHelper extends SQLiteOpenHelper
     {
         private static final String ID_ROW ="id_row" ;
@@ -168,18 +89,18 @@ public class MyDbAdapter {
             try {
                 db.execSQL(CREATE_TABLE);
             } catch (Exception e) {
-                Message.message(context,""+e);
+                UiUtilities.showToast(context,""+e);
             }
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             try {
-                Message.message(context,"OnUpgrade");
+                UiUtilities.showToast(context,"OnUpgrade");
                 db.execSQL(DROP_TABLE);
                 onCreate(db);
             }catch (Exception e) {
-                Message.message(context,""+e);
+                UiUtilities.showToast(context,""+e);
             }
         }
     }

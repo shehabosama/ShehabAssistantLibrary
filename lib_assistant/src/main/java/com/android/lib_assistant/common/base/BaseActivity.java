@@ -1,10 +1,6 @@
 package com.android.lib_assistant.common.base;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
-import android.view.Menu;
-import android.view.MenuInflater;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -65,14 +61,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
     }
-
-
-//    @SuppressLint("RestrictedApi")
-//    public abstract void onCreateOptionsMenu(Menu menu, MenuInflater inflater);
-//
-//    protected abstract void initializeViews();
-//
-//    protected abstract void setListeners();
 
     protected void replaceFragment(int containerId, Fragment fragment, boolean addToBackStack, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

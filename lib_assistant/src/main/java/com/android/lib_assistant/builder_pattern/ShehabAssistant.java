@@ -6,10 +6,8 @@ import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.android.lib_assistant.R;
 import com.android.lib_assistant.Ui.Fragment.CallBacks;
 import com.android.lib_assistant.Ui.Fragment.MainFragment;
@@ -17,8 +15,10 @@ import com.android.lib_assistant.common.SqlHelper.MyDbAdapter;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
 import java.util.List;
 import java.util.Locale;
-
-public class ShehabAssistantBuilder{
+/**
+ * @auther Shehab Osama.
+ */
+public class ShehabAssistant {
 
     TextToSpeech textToSpeech;
     private Context context;
@@ -28,7 +28,7 @@ public class ShehabAssistantBuilder{
     private int res;
     private float voiceSpeed=0.0f;
 
-    public ShehabAssistantBuilder(Builder builder) {
+    public ShehabAssistant(Builder builder) {
         this.textToSpeech = builder.textToSpeech;
         this.context = builder.context;
         this.mlanguage = builder.mlanguage;
@@ -119,7 +119,6 @@ public class ShehabAssistantBuilder{
             boolean checkEngin = false;
             List<TextToSpeech.EngineInfo> engineInfo = textToSpeech.getEngines();
             for (TextToSpeech.EngineInfo info : engineInfo) {
-                Log.d("TAG", "isEnginExists: " + info.name);
                 if (info.name.equals("com.google.android.tts")) {
                     checkEngin = true;
                     break;
@@ -154,8 +153,8 @@ public class ShehabAssistantBuilder{
             return this;
         }
 
-        public ShehabAssistantBuilder build() {
-            return new ShehabAssistantBuilder(this);
+        public ShehabAssistant build() {
+            return new ShehabAssistant(this);
         }
 
         public Builder setVoiceTone(float voiceTone) {

@@ -1,12 +1,13 @@
 package com.android.shehabassistant;
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.lib_assistant.Ui.Fragment.CallBacks;
-import com.android.lib_assistant.builder_pattern.ShehabAssistantBuilder;
+import com.android.lib_assistant.builder_pattern.ShehabAssistant;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
     /**
      * @auther Shehab Osama.
      */
-    ShehabAssistantBuilder shehabAssistantBuilder;
+    ShehabAssistant shehabAssistant;
     @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +38,27 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
         patternQuestionAnswers.add(new PatternQuestionAnswer(8, "who made you", "hello my blood", 0));
         patternQuestionAnswers.add(new PatternQuestionAnswer(8, "who made you", "hello my blood", 0));
 
-       shehabAssistantBuilder =  ShehabAssistantBuilder.Builder.newInstance()
+       shehabAssistant =  ShehabAssistant.Builder.newInstance()
                .with(this)
                .setLanguage("ar")
                .setVoiceTone(1.0f)
-               .setVoiceSpeed(0.9f)
+               .setVoiceSpeed(1.0f)
                .setupTextToSpeech()
                .build();
 
        findViewById(R.id.tv_noice).setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               shehabAssistantBuilder.speakOut("مرحبا بكم في هذا الصباح المتواضع جدا اريد ان اعرفكم بنفسي انا المهندس شهاب اسامه فتحي خريج جامعه القاهره كلية علوم الحاسب");
+               shehabAssistant.speakOut("مرحبا بكم في هذا الصباح المتواضع جدا اريد ان اعرفكم بنفسي انا المهندس شهاب أسامه فتحي خريج جامعة القاهره كلية علوم الحاسب");
              //  shehabAssistantBuilder.speakOut("hello every one hope you are doing great");
+               Toast.makeText(MainActivity.this, Build.MANUFACTURER, Toast.LENGTH_SHORT).show();
 
            }
        });
         findViewById(R.id.tv_stop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shehabAssistantBuilder.stopTTS();
+                shehabAssistant.stopTTS();
             }
         });
 
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
     @Override
     public void onStop() {
         super.onStop();
-        shehabAssistantBuilder.stopTTS();
+        shehabAssistant.stopTTS();
     }
 
 
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
 
     @Override
     public void doAction(int key) {
-        Log.e("toast", "onListenerToFragment: toaaaaaaaast ");
         if (key == 1) {
             Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
         }
@@ -82,13 +83,13 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shehabAssistantBuilder.stopTTS();
-        shehabAssistantBuilder.shutdownTTS();
+        shehabAssistant.stopTTS();
+        shehabAssistant.shutdownTTS();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        shehabAssistantBuilder.stopTTS();
+        shehabAssistant.stopTTS();
     }
 }
