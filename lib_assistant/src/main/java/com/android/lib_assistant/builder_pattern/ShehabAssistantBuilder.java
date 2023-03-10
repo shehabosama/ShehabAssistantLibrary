@@ -1,11 +1,11 @@
 package com.android.lib_assistant.builder_pattern;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,149 +15,170 @@ import com.android.lib_assistant.Ui.Fragment.CallBacks;
 import com.android.lib_assistant.Ui.Fragment.MainFragment;
 import com.android.lib_assistant.common.SqlHelper.MyDbAdapter;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
-
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
-public class ShehabAssistantBuilder  implements IShehabAssistantBuilder, CallBacks {
+public class ShehabAssistantBuilder{
 
+    TextToSpeech textToSpeech;
     private Context context;
-    private String language;
-    private boolean checkTTSIsExists;
-    private boolean checkIfLanguageNotSupportedInCurrentDevice;
-
+    private String mlanguage;
     private MyDbAdapter myDbAdapter;
-    private TextToSpeech textToSpeech;
+    private float voiceTone = 0.0f;
     private int res;
+    private float voiceSpeed=0.0f;
 
-    public Context getContext() {
-        return context;
+    public ShehabAssistantBuilder(Builder builder) {
+        this.textToSpeech = builder.textToSpeech;
+        this.context = builder.context;
+        this.mlanguage = builder.mlanguage;
+        this.myDbAdapter = builder.myDbAdapter;
+        this.res = builder.res;
+        this.voiceSpeed = builder.voiceSpeed;
+        this.voiceTone = builder.voiceTone;
     }
 
-    public void setContext(Context context,Activity activity) {
-        this.context = context;
-    }
-
-    public boolean isCheckTTSIsExists() {
-        return checkTTSIsExists;
-    }
-
-    public void setCheckTTSIsExists(boolean checkTTSIsExists) {
-        this.checkTTSIsExists = checkTTSIsExists;
-    }
-
-    public boolean isCheckIfLanguageNotSupportedInCurrentDevice() {
-        return checkIfLanguageNotSupportedInCurrentDevice;
-    }
-
-    public void setCheckIfLanguageNotSupportedInCurrentDevice(boolean checkIfLanguageNotSupportedInCurrentDevice) {
-        this.checkIfLanguageNotSupportedInCurrentDevice = checkIfLanguageNotSupportedInCurrentDevice;
-    }
-
-    public ShehabAssistantBuilder(Context context, final String language) {
-        this.context = context;
-        this.language = language;
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status == TextToSpeech.SUCCESS){
-                    Set<String> a=new HashSet<>();
-                    a.add("male");//here you can give male if you want to select male voice.
-                    //Voice v=new Voice("en-us-x-sfg#female_2-local",new Locale("en","US"),400,200,true,a);
-                   // Voice v= new Voice("en-us-x-sfg#male_2-local",new Locale("en","US"),400,200,true,a);
-                  //  textToSpeech.setVoice(v);
-                 //   textToSpeech.setSpeechRate(0.8f);
-
-                    // int result = T2S.setLanguage(Locale.US);
-                 //   int result = textToSpeech.setVoice(v);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        res = textToSpeech.setLanguage(Locale.forLanguageTag(language));
-                        Set<Locale> avail  = textToSpeech.getAvailableLanguages();
-                        for (Locale locale : avail) {
-                            Log.e("TAG", "local: ${}"+locale.getLanguage());
-                            if (locale.getDisplayVariant() != null) {
-                                Log.e("TAG", "  var: " + locale.getVariant());
-                            }
-                        }
-                        Log.e("TAG", "local: ${}"+Arrays.toString(Locale.getAvailableLocales()));
-                        List<TextToSpeech.EngineInfo> engineInfo = textToSpeech.getEngines();
-                        for (TextToSpeech.EngineInfo info : engineInfo) {
-                            Log.e("TAG", "info: "+info);
-                        }
-                    }
-
-
-
-                    // int result =textToSpeech.setLanguage(Locale.US);
-                    if(res == TextToSpeech.LANG_MISSING_DATA||res == TextToSpeech.LANG_NOT_SUPPORTED){
-                        checkIfLanguageNotSupportedInCurrentDevice = true;
-                    }else{
-                        checkIfLanguageNotSupportedInCurrentDevice = false;
-                    }
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void speakOut(String textRekognation){
+    public void speakOut(String textRekognation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            textToSpeech.speak(textRekognation,TextToSpeech.QUEUE_FLUSH,null,null);
+            textToSpeech.speak(textRekognation, TextToSpeech.QUEUE_FLUSH, null, null);
         }
     }
-
-    @Override
-    public ShehabAssistantBuilder addFloatActionButton() {
-        FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, MainFragment.newInstance(this) , "voice").commit();        return this;
-    }
-
-    @Override
-    public ShehabAssistantBuilder addListOfQuestionAnswerModel(List<PatternQuestionAnswer> models) {
-        myDbAdapter = new MyDbAdapter(context);
-        myDbAdapter.delete();
-       myDbAdapter.insertData(models);
-        return this;
-    }
-
-    @Override
-    public ShehabAssistantBuilder checkTTSIsExists() {
-        return this;
-    }
-
-    @Override
-    public ShehabAssistantBuilder checkIfLanguageSupportInCurrentDevice() {
-        if (checkIfLanguageNotSupportedInCurrentDevice){
-            Intent intent = new Intent();
-            intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-            context.startActivity(intent);
-        }
-        return this;
-    }
-
-    @Override
-    public ShehabAssistantBuilder build() {
-        return new ShehabAssistantBuilder(context,language);
-    }
-
-    @Override
-    public void doAction(int key) {
-
-    }
-    @Override
-    public void stopTTS(){
-        if(textToSpeech !=null){
+    public void stopTTS() {
+        if (textToSpeech != null) {
             textToSpeech.stop();
         }
     }
-    @Override
-    public void shutdownTTS(){
-        if (textToSpeech != null){
+
+    public void shutdownTTS() {
+        if (textToSpeech != null) {
             textToSpeech.shutdown();
         }
     }
+    public void setVoiceTone(float voiceTone) {
+        this.voiceTone = voiceTone;
+    }
+
+    public void setVoiceSpeed(float voiceSpeed) {
+        this.voiceSpeed = voiceSpeed;
+
+    }
+    public void setVoiceType() {
+        Intent intent = new Intent();
+        intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+        context.startActivity(intent);
+    }
+
+   public static class Builder implements CallBacks{
+        TextToSpeech textToSpeech;
+        private Context context;
+        private String mlanguage;
+        private MyDbAdapter myDbAdapter;
+        private int res;
+        private float voiceSpeed=0.0f;
+        private float voiceTone = 0.0f;
+        public Builder(){
+        }
+        public static Builder newInstance()
+        {
+            return new Builder();
+        }
+        public Builder with(Context context){
+            this.context = context;
+            return this;
+        }
+       public Builder setLanguage(String language){
+            this.mlanguage = language;
+            return this;
+        }
+       public Builder setupTextToSpeech(){
+            textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status == TextToSpeech.SUCCESS) {
+                        textToSpeech.setSpeechRate(voiceSpeed);
+                        textToSpeech.setPitch(voiceTone);
+                        if (isEnginExists() && !isLanguageExists()) {
+                            final String appPackageName = "com.google.android.tts"; // getPackageName() from Context or Activity object
+                            try {
+                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                            } catch (android.content.ActivityNotFoundException anfe) {
+                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                            }
+                        } else if (!isEnginExists()) {
+                            Toast.makeText(context, "This Device not support text to speech", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else {
+                        Toast.makeText(context, "This Device not support text to speech2", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, "com.google.android.tts");
+            return this;
+        }
+        private boolean isEnginExists() {
+            boolean checkEngin = false;
+            List<TextToSpeech.EngineInfo> engineInfo = textToSpeech.getEngines();
+            for (TextToSpeech.EngineInfo info : engineInfo) {
+                Log.d("TAG", "isEnginExists: " + info.name);
+                if (info.name.equals("com.google.android.tts")) {
+                    checkEngin = true;
+                    break;
+                } else {
+                    checkEngin = false;
+                }
+
+            }
+            return checkEngin;
+        }
+
+        private boolean isLanguageExists() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                res = textToSpeech.setLanguage(Locale.forLanguageTag(mlanguage));
+                // checkIfLanguageSupportInCurrentDevice();
+                Log.d("TAG", "isLanguageExists: " + res);
+                return res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED;
+            }
+            return false;
+        }
+
+        public Builder addFloatActionButton() {
+            FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.container, MainFragment.newInstance(this), "voice").commit();
+            return this;
+        }
+
+        public Builder addListOfQuestionAnswerModel(List<PatternQuestionAnswer> models) {
+            myDbAdapter = new MyDbAdapter(context);
+            myDbAdapter.delete();
+            myDbAdapter.insertData(models);
+            return this;
+        }
+
+        public ShehabAssistantBuilder build() {
+            return new ShehabAssistantBuilder(this);
+        }
+
+        public Builder setVoiceTone(float voiceTone) {
+            this.voiceTone = voiceTone;
+            return this;
+        }
+
+        public Builder setVoiceSpeed(float voiceSpeed) {
+            this.voiceSpeed = voiceSpeed;
+            return this;
+        }
+
+        public Builder setVoiceType() {
+            Intent intent = new Intent();
+            intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+            context.startActivity(intent);
+            return this;
+        }
+
+        @Override
+        public void doAction(int key) {
+
+        }
+    }
+
 }
