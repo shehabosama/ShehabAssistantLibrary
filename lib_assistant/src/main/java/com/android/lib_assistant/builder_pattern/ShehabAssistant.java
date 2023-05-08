@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
@@ -11,22 +12,30 @@ import androidx.fragment.app.FragmentTransaction;
 import com.android.lib_assistant.R;
 import com.android.lib_assistant.Ui.Fragment.CallBacks;
 import com.android.lib_assistant.Ui.Fragment.MainFragment;
+import com.android.lib_assistant.common.HelperStuffs.TextToSpeechListener;
 import com.android.lib_assistant.common.SqlHelper.MyDbAdapter;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
+
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+
 /**
  * @auther Shehab Osama.
  */
-public class ShehabAssistant {
+public class ShehabAssistant  {
 
-    TextToSpeech textToSpeech;
+    private TextToSpeech textToSpeech;
     private Context context;
     private String mlanguage;
     private MyDbAdapter myDbAdapter;
     private float voiceTone = 0.0f;
     private int res;
     private float voiceSpeed=0.0f;
+    private TextToSpeechListener onTextToSpeechListener;
 
     public ShehabAssistant(Builder builder) {
         this.textToSpeech = builder.textToSpeech;
@@ -36,11 +45,15 @@ public class ShehabAssistant {
         this.res = builder.res;
         this.voiceSpeed = builder.voiceSpeed;
         this.voiceTone = builder.voiceTone;
+        this.onTextToSpeechListener = builder.onTextToSpeechListener;
     }
-
+    HashMap<String, String> map = new HashMap<String, String>();
     public void speakOut(String textRekognation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            textToSpeech.speak(textRekognation, TextToSpeech.QUEUE_FLUSH, null, null);
+            map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID"+new Random().nextInt());
+
+            textToSpeech.speak(textRekognation, TextToSpeech.QUEUE_FLUSH, null, "test");
+            onTextToSpeechListener();
         }
     }
     public void stopTTS() {
@@ -67,15 +80,34 @@ public class ShehabAssistant {
         intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
         context.startActivity(intent);
     }
+    public void onTextToSpeechListener(){
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                onTextToSpeechListener.onStart(utteranceId);
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                onTextToSpeechListener.onDone(utteranceId);
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                onTextToSpeechListener.onError(utteranceId);
+            }
+        });
+    }
 
    public static class Builder implements CallBacks{
-        TextToSpeech textToSpeech;
+        private TextToSpeech textToSpeech;
         private Context context;
         private String mlanguage;
         private MyDbAdapter myDbAdapter;
         private int res;
         private float voiceSpeed=0.0f;
         private float voiceTone = 0.0f;
+       private TextToSpeechListener onTextToSpeechListener;
         public Builder(){
         }
         public static Builder newInstance()
@@ -90,11 +122,16 @@ public class ShehabAssistant {
             this.mlanguage = language;
             return this;
         }
+        public Builder setOnTextToSpeechListener(TextToSpeechListener textToSpeechListener){
+            this.onTextToSpeechListener = textToSpeechListener;
+            return this;
+        }
        public Builder setupTextToSpeech(){
             textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
                     if (status == TextToSpeech.SUCCESS) {
+                        onTextToSpeechListener();
                         textToSpeech.setSpeechRate(voiceSpeed);
                         textToSpeech.setPitch(voiceTone);
                         if (isEnginExists() && !isLanguageExists()) {
@@ -129,7 +166,24 @@ public class ShehabAssistant {
             }
             return checkEngin;
         }
+        public void onTextToSpeechListener(){
+            textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                @Override
+                public void onStart(String utteranceId) {
+                    onTextToSpeechListener.onStart(utteranceId);
+                }
 
+                @Override
+                public void onDone(String utteranceId) {
+                    onTextToSpeechListener.onDone(utteranceId);
+                }
+
+                @Override
+                public void onError(String utteranceId) {
+                    onTextToSpeechListener.onError(utteranceId);
+                }
+            });
+        }
         private boolean isLanguageExists() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 res = textToSpeech.setLanguage(Locale.forLanguageTag(mlanguage));

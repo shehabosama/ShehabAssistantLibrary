@@ -1,64 +1,53 @@
 package com.android.shehabassistant;
+
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.lib_assistant.Ui.Fragment.CallBacks;
 import com.android.lib_assistant.builder_pattern.ShehabAssistant;
+import com.android.lib_assistant.common.HelperStuffs.TextToSpeechListener;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
+
 import java.util.ArrayList;
 import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements CallBacks {
 
     /**
      * @auther Shehab Osama.
      */
     ShehabAssistant shehabAssistant;
+    TextView textView2;
+
     @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        List<PatternQuestionAnswer> patternQuestionAnswers = new ArrayList<>();
-        patternQuestionAnswers.add(new PatternQuestionAnswer(1, "hello", "hello dear", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(2, "hey", "What do you need", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(3, "how are you", "fine", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(4, "how old are you", "seventeen", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(5, "what's your name", "my name is shehab", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(6, "hello", "hello friend", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(7, "hello", "hello bro", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "hello", "hello my blood", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "make toast", "okay i will make a toast", 1));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "toast", "okay sir", 1));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "who made you", "hello my blood", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "What's your name", "hello my blood", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "who made you", "hello my blood", 0));
-        patternQuestionAnswers.add(new PatternQuestionAnswer(8, "who made you", "hello my blood", 0));
 
-       shehabAssistant =  ShehabAssistant.Builder.newInstance()
-               .with(this)
-               .setLanguage("ar")
-               .setVoiceTone(1.0f)
-               .setVoiceSpeed(1.0f)
-               .setupTextToSpeech()
-               .build();
-
-       findViewById(R.id.tv_noice).setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               shehabAssistant.speakOut("مرحبا بكم في هذا الصباح المتواضع جدا اريد ان اعرفكم بنفسي انا المهندس شهاب أسامه فتحي خريج جامعة القاهره كلية علوم الحاسب");
-             //  shehabAssistantBuilder.speakOut("hello every one hope you are doing great");
-               Toast.makeText(MainActivity.this, Build.MANUFACTURER, Toast.LENGTH_SHORT).show();
-
-           }
-       });
-        findViewById(R.id.tv_stop).setOnClickListener(new View.OnClickListener() {
+        shehabAssistant = ShehabAssistant.Builder.newInstance()
+                .with(this)
+                .setLanguage("en")
+                .setVoiceTone(1.0f)
+                .setVoiceSpeed(1.0f)
+                .setupTextToSpeech()
+                .setOnTextToSpeechListener(textToSpeechListener)
+                .build();
+        TextView textView1 = findViewById(R.id.tv_noice);
+        textView2 = findViewById(R.id.tv_stop);
+        textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shehabAssistant.stopTTS();
+                shehabAssistant.speakOut("Hello every one this just a mimic to make sure that every things working as expected");
             }
         });
 
@@ -70,7 +59,54 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
         shehabAssistant.stopTTS();
     }
 
+    UtteranceProgressListener utteranceProgressListener = new UtteranceProgressListener() {
+        @Override
+        public void onStart(String utteranceId) {
+            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+        }
 
+        @Override
+        public void onDone(String utteranceId) {
+            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(String utteranceId) {
+            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+        }
+    };
+    private TextToSpeechListener textToSpeechListener = new TextToSpeechListener() {
+        @Override
+        public void onStart(String onStart) {
+            textView2.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView2.setText("loading");
+                }
+            });
+
+        }
+
+        @Override
+        public void onDone(String onDone) {
+            textView2.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView2.setText("onDone");
+                }
+            });
+        }
+
+        @Override
+        public void onError(String onError) {
+            textView2.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView2.setText("error");
+                }
+            });
+        }
+    };
 
 
     @Override
