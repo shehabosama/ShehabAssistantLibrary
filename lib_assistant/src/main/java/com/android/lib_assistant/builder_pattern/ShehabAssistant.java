@@ -15,19 +15,21 @@ import com.android.lib_assistant.Ui.Fragment.MainFragment;
 import com.android.lib_assistant.common.HelperStuffs.TextToSpeechListener;
 import com.android.lib_assistant.common.SqlHelper.MyDbAdapter;
 import com.android.lib_assistant.common.model.PatternQuestionAnswer;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.huawei.hms.api.HuaweiApiAvailability;
 
-import org.w3c.dom.Text;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * @auther Shehab Osama.
  */
 public class ShehabAssistant  {
-
     private TextToSpeech textToSpeech;
     private Context context;
     private String mlanguage;
@@ -47,11 +49,8 @@ public class ShehabAssistant  {
         this.voiceTone = builder.voiceTone;
         this.onTextToSpeechListener = builder.onTextToSpeechListener;
     }
-    HashMap<String, String> map = new HashMap<String, String>();
     public void speakOut(String textRekognation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID"+new Random().nextInt());
-
             textToSpeech.speak(textRekognation, TextToSpeech.QUEUE_FLUSH, null, "test");
             onTextToSpeechListener();
         }
@@ -118,6 +117,18 @@ public class ShehabAssistant  {
             this.context = context;
             return this;
         }
+        private void checkResourceAvailability(){
+            if (isEnginExists() && !isLanguageExists()) {
+                final String appPackageName = getEngin(); // getPackageName() from Context or Activity object
+                try {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+            } else if (!isEnginExists()) {
+                Toast.makeText(context, "This Device not support text to speech", Toast.LENGTH_SHORT).show();
+            }
+        }
        public Builder setLanguage(String language){
             this.mlanguage = language;
             return this;
@@ -127,6 +138,7 @@ public class ShehabAssistant  {
             return this;
         }
        public Builder setupTextToSpeech(){
+            String enginType = getEngin();
             textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -134,50 +146,57 @@ public class ShehabAssistant  {
                         onTextToSpeechListener();
                         textToSpeech.setSpeechRate(voiceSpeed);
                         textToSpeech.setPitch(voiceTone);
-                        if (isEnginExists() && !isLanguageExists()) {
-                            final String appPackageName = "com.google.android.tts"; // getPackageName() from Context or Activity object
-                            try {
-                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                            } catch (android.content.ActivityNotFoundException anfe) {
-                                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                            }
-                        } else if (!isEnginExists()) {
-                            Toast.makeText(context, "This Device not support text to speech", Toast.LENGTH_SHORT).show();
-                        }
-
+                        checkResourceAvailability();
                     }else {
                         Toast.makeText(context, "This Device not support text to speech2", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }, "com.google.android.tts");
+            }, enginType);
             return this;
         }
-        private boolean isEnginExists() {
+
+       private String getEngin() {
+           String manufacturer = android.os.Build.MANUFACTURER;
+           if(GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS){
+               return "com.google.android.tts";
+           }else if (HuaweiApiAvailability.getInstance().isHuaweiMobileServicesAvailable(context) == ConnectionResult.SUCCESS){
+               return "com.huawei.hiai";
+           }else if(manufacturer.toLowerCase(Locale.ROOT).equals("samsung")){
+               return "com.samsung.SMT";
+           }else {
+               return "";
+           }
+       }
+
+       private boolean isEnginExists() {
             boolean checkEngin = false;
             List<TextToSpeech.EngineInfo> engineInfo = textToSpeech.getEngines();
             for (TextToSpeech.EngineInfo info : engineInfo) {
+               // Log.d("TAG", "isEnginExists: "+info.name);
                 if (info.name.equals("com.google.android.tts")) {
                     checkEngin = true;
                     break;
-                } else {
-                    checkEngin = false;
+                }else if(info.name.equals("com.huawei.hiai")){
+                    checkEngin = true;
+                    break;
+                } else if(info.name.equals("com.samsung.SMT")){
+                    checkEngin = true;
+                    break;
                 }
-
             }
             return checkEngin;
         }
+        //com.huawei.hiai
         public void onTextToSpeechListener(){
             textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                 @Override
                 public void onStart(String utteranceId) {
                     onTextToSpeechListener.onStart(utteranceId);
                 }
-
                 @Override
                 public void onDone(String utteranceId) {
                     onTextToSpeechListener.onDone(utteranceId);
                 }
-
                 @Override
                 public void onError(String utteranceId) {
                     onTextToSpeechListener.onError(utteranceId);
@@ -188,7 +207,6 @@ public class ShehabAssistant  {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 res = textToSpeech.setLanguage(Locale.forLanguageTag(mlanguage));
                 // checkIfLanguageSupportInCurrentDevice();
-                Log.d("TAG", "isLanguageExists: " + res);
                 return res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED;
             }
             return false;

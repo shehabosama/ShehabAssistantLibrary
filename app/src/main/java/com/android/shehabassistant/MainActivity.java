@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
                 .setupTextToSpeech()
                 .setOnTextToSpeechListener(textToSpeechListener)
                 .build();
+
         TextView textView1 = findViewById(R.id.tv_noice);
         textView2 = findViewById(R.id.tv_stop);
         textView1.setOnClickListener(new View.OnClickListener() {
@@ -59,23 +60,7 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
         shehabAssistant.stopTTS();
     }
 
-    UtteranceProgressListener utteranceProgressListener = new UtteranceProgressListener() {
-        @Override
-        public void onStart(String utteranceId) {
-            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onDone(String utteranceId) {
-            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(String utteranceId) {
-            Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
-        }
-    };
-    private TextToSpeechListener textToSpeechListener = new TextToSpeechListener() {
+    private final TextToSpeechListener textToSpeechListener = new TextToSpeechListener() {
         @Override
         public void onStart(String onStart) {
             textView2.post(new Runnable() {
